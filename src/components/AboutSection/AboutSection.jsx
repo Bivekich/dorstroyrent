@@ -1,37 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Carousel } from 'react-bootstrap';
+import { client, urlFor } from '../../services/sanityClient';
 import './AboutSection.css';
 
-const images = [
-  '/images/photo1.jpg',
-  '/images/photo2.jpg',
-  '/images/photo3.jpg',
-];
-
 const AboutSection = () => {
+  const [aboutData, setAboutData] = useState(null);
+
+  useEffect(() => {
+    const fetchAboutData = async () => {
+      const query = '*[_type == "about"][0]';
+      const data = await client.fetch(query);
+      setAboutData(data);
+    };
+
+    fetchAboutData();
+  }, []);
+
+  if (!aboutData) return <div>Loading...</div>;
+
   return (
     <section className="about-section" id="about">
       <Container>
         <h2 className="about-heading">О нас</h2>
         <Row>
           <Col md={6} className="about-text">
-            <p className="about-description">
-              Добро пожаловать в нашу компанию, специализирующуюся на продаже
-              щебня! Мы предоставляем качественные строительные материалы и
-              гарантируем высокие стандарты продукции и обслуживания. Наша
-              команда с многолетним опытом готова предложить вам лучшие решения
-              и честные цены. Используем только экологически чистые сорта щебня
-              и обеспечиваем своевременные поставки. Присоединяйтесь к довольным
-              клиентам и воспользуйтесь нашими услугами уже сегодня!
-            </p>
+            <p className="about-description">{aboutData.description}</p>
           </Col>
           <Col md={6} className="about-carousel">
             <Carousel>
-              {images.map((image, index) => (
+              {aboutData.images.map((image, index) => (
                 <Carousel.Item key={index}>
                   <img
                     className="d-block w-100"
-                    src={image}
+                    src={urlFor(image).url()}
                     alt={`Slide ${index + 1}`}
                   />
                 </Carousel.Item>

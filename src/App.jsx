@@ -1,21 +1,22 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header/Header';
-import HeroSection from './components/HeroSection/HeroSection';
-import AboutSection from './components/AboutSection/AboutSection';
-import DeliverySection from './components/DeliverySection/DeliverySection';
-import CatalogSection from './components/CatalogSection/CatalogSection';
 import Footer from './components/Footer/Footer';
+import HomePage from './pages/HomePage';
+import ProductDetail from './pages/ProductDetail/ProductDetail';
+import ProductList from './pages/ProductList/ProductList';
 
 function App() {
   return (
-    <>
+    <Router>
       <Header />
-      <HeroSection />
-      <AboutSection />
-      <DeliverySection />
-      <CatalogSection />
+      <Routes>
+        <Route path="/category/:categorySlug" element={<ProductList />} />
+        <Route path="/product/:productSlug" element={<ProductDetail />} />
+        <Route path="/" element={<HomePage />} />
+      </Routes>
       <Footer />
-    </>
+    </Router>
   );
 }
 

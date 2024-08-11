@@ -1,34 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
+import { client, urlFor } from '../../services/sanityClient';
 import './DeliverySection.css';
 
-const deliveryOptions = [
-  {
-    title: 'Доставка',
-    description:
-      'Мы предлагаем быструю и надежную доставку прямо к вашему объекту. Наши профессиональные водители гарантируют своевременную доставку и высокое качество обслуживания.',
-    image: '/images/delivery.jpg',
-  },
-  {
-    title: 'Самовывоз',
-    description:
-      'Вы можете самостоятельно забрать товар из нашего склада. Мы обеспечим удобное время для самовывоза и предоставим всю необходимую информацию для вашего визита.',
-    image: '/images/self-pickup.jpg',
-  },
-];
-
 const DeliverySection = () => {
+  const [deliveryData, setDeliveryData] = useState(null);
+
+  useEffect(() => {
+    const fetchDeliveryData = async () => {
+      const query = '*[_type == "delivery"][0]';
+      const data = await client.fetch(query);
+      setDeliveryData(data);
+    };
+
+    fetchDeliveryData();
+  }, []);
+
+  if (!deliveryData) return <div>Loading...</div>;
+
   return (
     <section className="delivery-section" id="delivery">
       <Container>
         <h2 className="delivery-heading">Варианты доставки</h2>
         <Row>
-          {deliveryOptions.map((option, index) => (
+          {deliveryData.options.map((option, index) => (
             <Col md={6} key={index} className="mb-4">
               <Card className="delivery-card">
                 <Card.Img
                   variant="top"
-                  src={option.image}
+                  src={urlFor(option.image).url()}
                   className="delivery-card-image"
                 />
                 <Card.Body>

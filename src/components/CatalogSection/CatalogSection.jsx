@@ -1,36 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card } from 'react-bootstrap';
+import { client, urlFor } from '../../services/sanityClient';
 import './CatalogSection.css';
 
-const categories = [
-  {
-    name: 'Гранитный щебень',
-    link: '/category1',
-    image: '/images/category1.jpg',
-  },
-  { name: 'Щебень', link: '/category2', image: '/images/category2.jpg' },
-  {
-    name: 'Еврофракция щебня',
-    link: '/category3',
-    image: '/images/category3.jpg',
-  },
-  { name: 'ЩПС', link: '/category4', image: '/images/category4.jpg' },
-  { name: 'Отсев', link: '/category5', image: '/images/category5.jpg' },
-];
-
 const CatalogSection = () => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const query = '*[_type == "category"]';
+      const data = await client.fetch(query);
+      setCategories(data);
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <section className="catalog-section" id="catalog">
       <Container>
         <h2 className="catalog-heading">Каталог</h2>
         <Row>
-          {categories.map((category, index) => (
-            <Col md={3} sm={6} key={index} className="mb-4">
+          {categories.map((category) => (
+            <Col md={3} sm={6} key={category._id} className="mb-4">
               <Card className="catalog-card">
-                <a href={category.link} className="catalog-card-link">
+                <a
+                  href={`/category/${category.slug.current}`}
+                  className="catalog-card-link"
+                >
                   <Card.Img
                     variant="top"
-                    src={category.image}
+                    src={urlFor(category.image).url()}
                     className="catalog-card-image"
                   />
                   <Card.Body>
