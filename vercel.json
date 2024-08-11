@@ -1,9 +1,9 @@
 {
-  "version": 2,
-  "routes": [
+  "redirects": [
     {
-      "src": "/.*",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html",
+      "permanent": false
     }
   ]
 }
